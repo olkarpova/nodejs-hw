@@ -4,9 +4,9 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import {connectMongoDB} from "./db/connectMongoDB.js";
 // +.js дописуємо
-import { notFoundHandler } from './middelware/notfoundHandler.js';
-import { errorHandler } from './middelware/errorHandler.js';
-import { logger } from './middelware/logger.js';
+import { notFoundHandler } from './middleware/notfoundHandler.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { logger } from './middleware/logger.js';
 import notesRoutes from './routes/notesRoutes.js';
 
 const app = express();
