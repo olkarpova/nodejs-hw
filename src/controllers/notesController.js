@@ -10,28 +10,29 @@ export const getAllNotes = async (req, res) => {
 
   const skip = (page - 1) * perPage;
 
-  const notesQuery = Note.find({
-
-  });
+  const notesQuery = Note.find();
   //щоб не було дублювання коду,
   // без await, бо
   //з await автоматично виконується запит, а без - передає посилання на себе
   if (tag) {
     notesQuery.where('tag').equals(tag);
   }
-  // if (search) {
-  //   notesQuery.where({$text: {$search: search}});
-  // }
-  // текстовий пошук через точне співпадіння
 
+  // текстовий пошук через точне співпадіння:
   if (search) {
-    notesQuery.where({
-      $or: [ // без or search має бути і в title і в content
-        {title: { $regex: search, $options: "i" }},
-        {content: {$regex: search, $options: "i"}},
-      ], // пошук через regex повільний і не використовує індекси
-    });
+    notesQuery.where({$text: {$search: search}});
   }
+
+// пошук через regex повільний і не використовує індекси:
+  // if (search) {
+  //   notesQuery.where({
+  //     $or: [ // без or search має бути і в title і в content
+  //       {title: { $regex: search, $options: "i" }},
+  //       {content: {$regex: search, $options: "i"}},
+  //     ],
+  //   });
+  // }
+
   // querю оригінальну запустити можна лише 1 раз - проблема тому clone
   // clone клонує всі налаштування
   const [totalNotes, notes] = await Promise.all([

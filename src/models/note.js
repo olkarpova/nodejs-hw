@@ -24,7 +24,7 @@ const noteSchema =  new Schema(
     timestamps: true,
   },
 );
-// noteSchema.index({ title: "text", content: "text" });
+noteSchema.index({ title: "text", content: "text" });
 //готуємо модель
 export const Note = mongoose.model('Note', noteSchema);
 // 'Note' - назва моделі
