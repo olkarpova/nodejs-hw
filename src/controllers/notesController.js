@@ -1,9 +1,53 @@
 import { Note } from "../models/note.js";
 import createHttpError from "http-errors";
 
+//get/notes?page=1&perPage=10&tag=Todo&search=hello - query parametres
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+
+  const { page = 1, perPage = 10, tag, search} = req.query;
+
+  console.log(req.query);
+
+  const skip = (page - 1) * perPage;
+
+  const notesQuery = Note.find({
+
+  });
+  //щоб не було дублювання коду,
+  // без await, бо
+  //з await автоматично виконується запит, а без - передає посилання на себе
+  if (tag) {
+    notesQuery.where('tag').equals(tag);
+  }
+  // if (search) {
+  //   notesQuery.where({$text: {$search: search}});
+  // }
+  // текстовий пошук через точне співпадіння
+
+  if (search) {
+    notesQuery.where({
+      $or: [ // без or search має бути і в title і в content
+        {title: { $regex: search, $options: "i" }},
+        {content: {$regex: search, $options: "i"}},
+      ], // пошук через regex повільний і не використовує індекси
+    });
+  }
+  // querю оригінальну запустити можна лише 1 раз - проблема тому clone
+  // clone клонує всі налаштування
+  const [totalNotes, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalNotes / perPage);
+  // const notes = await Note.find();
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
 export const getNoteById = async (req, res) => {
