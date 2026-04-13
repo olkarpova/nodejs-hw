@@ -3,6 +3,12 @@ import { Schema } from 'mongoose';
 
 const studentSchema =  new Schema(
   {
+    //на student зберігаємо userId, бо студенти належать usery
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User', // userId посилається на інший документ в колекції користувачів
+      required: true,
+    },
     name: {
       type: String,
       required: true,

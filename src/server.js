@@ -9,6 +9,8 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './middleware/logger.js';
 import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
+import authRoutes from './routes/authRoutes.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 dotenv.config();
@@ -21,12 +23,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors()); //Дозвіл для запитів з будь-яких джерел
+app.use(helmet());
 app.use(logger); //Логер першим — бачить усі запити, Middleware для логування
 app.use(express.json({limit: '500kb'}),
 ); //Парсинг JSON-тіла
-app.use(cors()); //Дозвіл для запитів з будь-яких джерел
-app.use(helmet());
+app.use(cookieParser());
 
+app.use(authRoutes);
 app.use(notesRoutes);
 
 //404Middleware для неіснуючих маршрутів
