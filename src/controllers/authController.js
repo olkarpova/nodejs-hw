@@ -40,7 +40,7 @@ export const loginUser = async (req, res) => {
   }
 
   await Session.deleteOne({ userId: user._id });
-  
+
   const newSession = await createSession(user._id);
 
   setSessionCookies(res, newSession);
@@ -74,7 +74,7 @@ export const refreshUserSession = async (req, res) => {
   if (isTokenExpired) {
     throw createHttpError(401, 'Session token expired');
   }
-  await session.deleteOne({
+  await Session.deleteOne({
     _id: sessionId,
     refreshToken,
   });
