@@ -11,6 +11,8 @@ import notesRoutes from './routes/notesRoutes.js';
 import { errors } from 'celebrate';
 import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
+import 'dotenv/config';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -32,6 +34,7 @@ app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(notesRoutes);
+app.use(userRoutes);
 
 //404Middleware для неіснуючих маршрутів
 app.use(notFoundHandler);
